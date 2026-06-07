@@ -17,14 +17,16 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://admin:password123@localhost:5432/restaurant',
 });
 
-// DB 연결 확인
-pool.query('SELECT NOW()', (err, res) => {
-  if (err) {
-    console.error('DB 연결 실패:', err.message);
-  } else {
-    console.log('DB 연결 성공:', res.rows[0].now);
-  }
-});
+// DB 연결 확인 + 스키마 자동 실행
+const fs = require('fs');
+pool.query('SELECT NOW()')
+  .then(() => {
+    console.log('DB 연결 성공');
+    const sql = fs.readFileSync(path.join(__dirname, '../init.sql'), 'utf8');
+    return pool.query(sql);
+  })
+  .then(() => console.log('스키마 초기화 완료'))
+  .catch(err => console.error('DB 초기화 실패:', err.message));
 
 // DB 풀을 라우터에서 사용할 수 있도록 주입
 app.use((req, res, next) => {
