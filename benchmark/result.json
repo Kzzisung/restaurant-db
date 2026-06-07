@@ -1,0 +1,355 @@
+{
+  "state": {
+    "isStdOutTTY": true,
+    "isStdErrTTY": true,
+    "testRunDurationMs": 105155.83
+  },
+  "metrics": {
+    "iteration_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 194.30953016641936,
+        "min": 100.9607,
+        "med": 109.09385,
+        "max": 741.9363,
+        "p(90)": 483.56503000000004,
+        "p(95)": 525.778015
+      }
+    },
+    "iterations": {
+      "contains": "default",
+      "values": {
+        "count": 8052,
+        "rate": 76.57207403526748
+      },
+      "type": "counter"
+    },
+    "group_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 3.6828984160679252,
+        "min": 0.5058,
+        "med": 3.1924,
+        "max": 60.1205,
+        "p(90)": 5.83264,
+        "p(95)": 7.682844999999997
+      }
+    },
+    "checks": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "fails": 5621,
+        "rate": 0.68581968587558,
+        "passes": 12270
+      }
+    },
+    "vus": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "value": 10,
+        "min": 0,
+        "max": 30
+      }
+    },
+    "http_req_duration{expected_response:true}": {
+      "contains": "time",
+      "values": {
+        "avg": 5.424107024614936,
+        "min": 0.5058,
+        "med": 3.2833,
+        "max": 241.6303,
+        "p(90)": 9.676380000000002,
+        "p(95)": 15.809259999999973
+      },
+      "type": "trend"
+    },
+    "data_received": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 8015747,
+        "rate": 76227.31901788042
+      }
+    },
+    "reservation_success": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "fails": 50,
+        "rate": 0.8717948717948718,
+        "passes": 340
+      }
+    },
+    "http_req_failed": {
+      "values": {
+        "rate": 0.4606366459627329,
+        "passes": 5933,
+        "fails": 6947
+      },
+      "type": "rate",
+      "contains": "default"
+    },
+    "http_req_receiving": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 0.06669688664596268,
+        "min": 0,
+        "med": 0,
+        "max": 5.6966,
+        "p(90)": 0.5048100000000001,
+        "p(95)": 0.5388099999999998
+      }
+    },
+    "transaction_duration_ms": {
+      "type": "trend",
+      "contains": "default",
+      "values": {
+        "avg": 8.626533247256294,
+        "min": 1,
+        "med": 6,
+        "max": 242,
+        "p(90)": 16,
+        "p(95)": 21
+      },
+      "thresholds": {
+        "p(99)<2000": {
+          "ok": true
+        }
+      }
+    },
+    "http_req_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(95)": 16.79676499999999,
+        "avg": 6.315557802795019,
+        "min": 0.5058,
+        "med": 4.0753,
+        "max": 241.6303,
+        "p(90)": 12.239290000000002
+      },
+      "thresholds": {
+        "p(95)<500": {
+          "ok": true
+        }
+      }
+    },
+    "http_req_blocked": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 0.031300590062111784,
+        "min": 0,
+        "med": 0,
+        "max": 14.9781,
+        "p(90)": 0,
+        "p(95)": 0
+      }
+    },
+    "reservation_fail": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0.1282051282051282,
+        "passes": 50,
+        "fails": 340
+      }
+    },
+    "http_req_connecting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "min": 0,
+        "med": 0,
+        "max": 14.9781,
+        "p(90)": 0,
+        "p(95)": 0,
+        "avg": 0.026815341614906812
+      }
+    },
+    "http_req_sending": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "min": 0,
+        "med": 0,
+        "max": 2.3203,
+        "p(90)": 0,
+        "p(95)": 0,
+        "avg": 0.010839138198757758
+      }
+    },
+    "http_req_tls_handshaking": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "med": 0,
+        "max": 0,
+        "p(90)": 0,
+        "p(95)": 0,
+        "avg": 0,
+        "min": 0
+      }
+    },
+    "cancel_success": {
+      "values": {
+        "rate": 1,
+        "passes": 235,
+        "fails": 0
+      },
+      "type": "rate",
+      "contains": "default"
+    },
+    "http_req_waiting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "min": 0.5058,
+        "med": 4.005599999999999,
+        "max": 240.9032,
+        "p(90)": 12.160450000000003,
+        "p(95)": 16.74573,
+        "avg": 6.238021777950309
+      }
+    },
+    "vus_max": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "value": 40,
+        "min": 40,
+        "max": 40
+      }
+    },
+    "http_reqs": {
+      "values": {
+        "count": 12880,
+        "rate": 122.48488742849541
+      },
+      "type": "counter",
+      "contains": "default"
+    },
+    "data_sent": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 2300696,
+        "rate": 21878.920075092366
+      }
+    }
+  },
+  "root_group": {
+    "path": "",
+    "id": "d41d8cd98f00b204e9800998ecf8427e",
+    "groups": [
+      {
+        "name": "식당 목록 조회",
+        "path": "::식당 목록 조회",
+        "id": "f8810b053fc9d54639c1c3fb44278bfc",
+        "groups": [],
+        "checks": [
+            {
+              "name": "200 OK",
+              "path": "::식당 목록 조회::200 OK",
+              "id": "338d5a0c6264cbecd32180b099140985",
+              "passes": 1531,
+              "fails": 0
+            }
+          ]
+      },
+      {
+        "path": "::예약 목록 조회",
+        "id": "5d6271e546658e2c4b2b2abe6ab73d5b",
+        "groups": [],
+        "checks": [
+            {
+              "name": "200 OK",
+              "path": "::예약 목록 조회::200 OK",
+              "id": "0a3eb2d8a6156b3380c47c7a7d643daf",
+              "passes": 1531,
+              "fails": 0
+            }
+          ],
+        "name": "예약 목록 조회"
+      },
+      {
+        "name": "인기 메뉴 조회",
+        "path": "::인기 메뉴 조회",
+        "id": "49b8b857dd5d8d4c56af9b2d44705269",
+        "groups": [],
+        "checks": [
+            {
+              "name": "200 OK",
+              "path": "::인기 메뉴 조회::200 OK",
+              "id": "13c1723533123ef26e1561552254ce47",
+              "passes": 1531,
+              "fails": 0
+            }
+          ]
+      },
+      {
+        "groups": [],
+        "checks": [
+            {
+              "passes": 1531,
+              "fails": 0,
+              "name": "200 OK",
+              "path": "::식당 통계 조회::200 OK",
+              "id": "aea0ced39660cbf17f138d64434a3666"
+            }
+          ],
+        "name": "식당 통계 조회",
+        "path": "::식당 통계 조회",
+        "id": "2bee5be6c42c34e4d1cf253cbaba5b15"
+      }
+    ],
+    "checks": [
+      {
+        "path": "::정상 예약 성공 (201)",
+        "id": "8aac2642ca62612b01d828fc3fed6456",
+        "passes": 340,
+        "fails": 50,
+        "name": "정상 예약 성공 (201)"
+      },
+      {
+        "passes": 13,
+        "fails": 5558,
+        "name": "예약 성공 (201)",
+        "path": "::예약 성공 (201)",
+        "id": "667c963ecd4d8f720947caeb1f13ff48"
+      },
+      {
+        "passes": 5558,
+        "fails": 13,
+        "name": "좌석 부족 차단 (400)",
+        "path": "::좌석 부족 차단 (400)",
+        "id": "c6146bfa258106c56677757ce09dbd6a"
+      },
+      {
+        "name": "취소 성공 (200)",
+        "path": "::취소 성공 (200)",
+        "id": "3023a6fd3acabcb4a12704b4d8c7a5a9",
+        "passes": 235,
+        "fails": 0
+      }
+    ],
+    "name": ""
+  },
+  "options": {
+    "summaryTrendStats": [
+      "avg",
+      "min",
+      "med",
+      "max",
+      "p(90)",
+      "p(95)"
+    ],
+    "summaryTimeUnit": "",
+    "noColor": false
+  }
+}

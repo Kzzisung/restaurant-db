@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>식당 예약 시스템</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0d0a;
+    --bg2: #1a1714;
+    --bg3: #242018;
+    --border: #3a3530;
+    --accent: #c9a86c;
+    --accent2: #e8c990;
+    --text: #f0ebe2;
+    --muted: #8a8070;
+    --danger: #d05040;
+    --success: #5a9a6a;
+    --radius: 12px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--bg2);
+  }
+  header h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+  header span {
+    font-size: 13px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 2px 10px;
+    border-radius: 20px;
+  }
+  .nav {
+    display: flex;
+    gap: 4px;
+    padding: 16px 40px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav button {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--muted);
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .nav button.active, .nav button:hover {
+    background: var(--bg3);
+    border-color: var(--border);
+    color: var(--accent);
+  }
+  .main { padding: 32px 40px; max-width: 1100px; }
+  .page { display: none; }
+  .page.active { display: block; }
+  h2 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-bottom: 20px;
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-bottom: 8px;
+  }
+  .card-sub { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.6; }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    margin-right: 4px;
+  }
+  .badge.green { border-color: var(--success); color: var(--success); }
+  .badge.red { border-color: var(--danger); color: var(--danger); }
+  .badge.gold { border-color: var(--accent); color: var(--accent); }
+  button.btn {
+    background: var(--accent);
+    color: #1a1714;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    transition: background 0.2s;
+    margin-top: 12px;
+  }
+  button.btn:hover { background: var(--accent2); }
+  button.btn.outline {
+    background: none;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+  }
+  button.btn.outline:hover { background: var(--bg3); }
+  button.btn.danger {
+    background: none;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+  }
+  button.btn.danger:hover { background: rgba(208,80,64,0.1); }
+  .form-group { margin-bottom: 16px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  input, select, textarea {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus, select:focus { border-color: var(--accent); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .modal h3 { font-family:'Noto Serif KR',serif; color:var(--accent2); margin-bottom:20px; font-size:18px; }
+  .toast {
+    position: fixed;
+    bottom: 32px; right: 32px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 14px;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 200;
+    max-width: 320px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-color: var(--success); }
+  .toast.error { border-color: var(--danger); }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  thead th {
+    text-align:left; padding:10px 14px;
+    font-size:12px; font-weight:500;
+    color:var(--muted);
+    border-bottom:1px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  tbody td { padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+  tbody tr:hover td { background: var(--bg3); }
+  .status-confirmed { color: var(--success); }
+  .status-cancelled { color: var(--danger); }
+  .status-completed { color: var(--accent); }
+  .menu-item {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 14px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    margin-bottom:8px;
+    cursor:pointer;
+    transition: border-color 0.2s;
+  }
+  .menu-item:hover, .menu-item.selected { border-color:var(--accent); background:var(--bg3); }
+  .menu-item.selected .menu-name { color:var(--accent); }
+  .qty-control { display:flex; align-items:center; gap:8px; }
+  .qty-btn {
+    width:26px; height:26px;
+    background:var(--bg3);
+    border:1px solid var(--border);
+    color:var(--text);
+    border-radius:4px;
+    cursor:pointer;
+    font-size:16px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .qty-btn:hover { border-color:var(--accent); }
+  .divider { border:none; border-top:1px solid var(--border); margin:20px 0; }
+  #db-info {
+    background: var(--bg3);
+    border:1px solid var(--border);
+    border-radius: var(--radius);
+    padding:16px 20px;
+    margin-bottom:24px;
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.8;
+  }
+  #db-info strong { color:var(--accent); }
+  .section-label {
+    font-size:12px;
+    font-weight:500;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:12px;
+    margin-top:24px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🍽 식당 예약 시스템</h1>
+  <span>PostgreSQL + Express</span>
+</header>
+
+<nav class="nav">
+  <button class="active" onclick="showPage('restaurants')">식당 목록</button>
+  <button onclick="showPage('reservations')">예약 현황</button>
+  <button onclick="showPage('menus')">메뉴 통계</button>
+  <button onclick="showPage('new-reservation')">예약 생성</button>
+</nav>
+
+<div class="main">
+
+  <!-- 식당 목록 -->
+  <div class="page active" id="page-restaurants">
+    <h2>식당 목록</h2>
+    <div class="grid" id="restaurants-list">로딩 중...</div>
+  </div>
+
+  <!-- 예약 현황 -->
+  <div class="page" id="page-reservations">
+    <h2>전체 예약 현황</h2>
+    <div id="reservations-table">로딩 중...</div>
+  </div>
+
+  <!-- 메뉴 통계 -->
+  <div class="page" id="page-menus">
+    <h2>인기 메뉴 통계</h2>
+    <div id="menus-list">로딩 중...</div>
+  </div>
+
+  <!-- 예약 생성 -->
+  <div class="page" id="page-new-reservation">
+    <h2>새 예약 생성</h2>
+    <div id="db-info">
+      <strong>트랜잭션 보장 항목</strong><br>
+      ① 좌석 수 확인 (FOR UPDATE 잠금) → ② 예약 INSERT → ③ 주문 항목 INSERT + 가격 스냅샷<br>
+      하나라도 실패 시 전체 ROLLBACK
+    </div>
+    <div style="max-width:480px">
+      <div class="form-group">
+        <label>사용자 ID</label>
+        <select id="f-user">
+          <option value="1">1 - 김민준</option>
+          <option value="2">2 - 이서연</option>
+          <option value="3">3 - 박지호</option>
+          <option value="4">4 - 최유나</option>
+          <option value="5">5 - 정하은</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>식당 선택</label>
+        <select id="f-restaurant" onchange="loadMenusForReservation()">
+          <option value="">-- 선택 --</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>예약 일시</label>
+          <input type="datetime-local" id="f-datetime">
+        </div>
+        <div class="form-group">
+          <label>인원 수</label>
+          <input type="number" id="f-party" value="2" min="1" max="20">
+        </div>
+      </div>
+
+      <div class="section-label">메뉴 선택 (선택사항)</div>
+      <div id="menu-select-list"></div>
+
+      <button class="btn" onclick="createReservation()">예약 생성 (트랜잭션 실행)</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- 식당 상세 모달 -->
+<div class="modal-overlay" id="modal-restaurant" onclick="closeModal(event)">
+  <div class="modal" id="modal-restaurant-content"></div>
+</div>
+
+<!-- 예약 상세 모달 -->
+<div class="modal-overlay" id="modal-reservation" onclick="closeModal(event)">
+  <div class="modal" id="modal-reservation-content"></div>
+</div>
+
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://localhost:3000/api';
+const selectedMenus = {};
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (name === 'restaurants') loadRestaurants();
+  if (name === 'reservations') loadReservations();
+  if (name === 'menus') loadMenuStats();
+  if (name === 'new-reservation') initReservationForm();
+}
+
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+async function loadRestaurants() {
+  const res = await fetch(API + '/restaurants');
+  const data = await res.json();
+  document.getElementById('restaurants-list').innerHTML = data.map(r => `
+    <div class="card" onclick="showRestaurantDetail(${r.id})">
+      <div class="card-title">${r.name}</div>
+      <div class="card-sub">${r.address}<br>영업시간: ${r.open_time?.slice(0,5)} ~ ${r.close_time?.slice(0,5)}</div>
+      <span class="badge gold">총 ${r.total_seats}석</span>
+      <span class="badge green">예약 ${r.active_reservations}건</span>
+      <div style="margin-top:10px">
+        <button class="btn outline" style="margin-top:0;font-size:12px;padding:6px 14px">상세 보기</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function showRestaurantDetail(id) {
+  const [detail, stats] = await Promise.all([
+    fetch(API + '/restaurants/' + id).then(r => r.json()),
+    fetch(API + '/restaurants/' + id + '/stats').then(r => r.json()),
+  ]);
+  document.getElementById('modal-restaurant-content').innerHTML = `
+    <h3>${detail.name}</h3>
+    <div class="card-sub" style="margin-bottom:16px">${detail.address}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+      <div class="card"><div class="card-sub">총 예약</div><div style="font-size:20px;color:var(--accent)">${stats.total_reservations || 0}</div></div>
+      <div class="card"><div class="card-sub">총 매출</div><div style="font-size:20px;color:var(--accent)">${Number(stats.total_revenue||0).toLocaleString()}원</div></div>
+      <div class="card"><div class="card-sub">평균 인원</div><div style="font-size:20px;color:var(--accent)">${Number(stats.avg_party_size||0).toFixed(1)}명</div></div>
+      <div class="card"><div class="card-sub">인기 메뉴</div><div style="font-size:14px;color:var(--accent)">${stats.best_selling_menu || '-'}</div></div>
+    </div>
+    <div class="section-label">메뉴</div>
+    ${detail.menus?.map(m => `
+      <div class="menu-item" style="cursor:default">
+        <span class="menu-name">${m.name}</span>
+        <span class="badge gold">${m.price.toLocaleString()}원</span>
+      </div>
+    `).join('') || '메뉴 없음'}
+    <button class="btn" style="width:100%;margin-top:16px" onclick="closeModal()">닫기</button>
+  `;
+  document.getElementById('modal-restaurant').classList.add('open');
+}
+
+async function loadReservations() {
+  const res = await fetch(API + '/reservations');
+  const data = await res.json();
+  document.getElementById('reservations-table').innerHTML = `
+    <table>
+      <thead><tr>
+        <th>ID</th><th>고객</th><th>식당</th><th>예약일시</th><th>인원</th><th>주문금액</th><th>상태</th><th></th>
+      </tr></thead>
+      <tbody>
+        ${data.map(r => `<tr>
+          <td style="color:var(--muted)">#${r.id}</td>
+          <td>${r.user_name}</td>
+          <td>${r.restaurant_name}</td>
+          <td style="font-size:13px">${new Date(r.reserved_at).toLocaleString('ko-KR')}</td>
+          <td>${r.party_size}명</td>
+          <td>${Number(r.total_amount).toLocaleString()}원</td>
+          <td><span class="status-${r.status}">${r.status}</span></td>
+          <td>
+            <button class="btn outline" style="margin-top:0;font-size:12px;padding:4px 10px" onclick="showReservationDetail(${r.id})">상세</button>
+            ${r.status === 'confirmed' ? `<button class="btn danger" style="margin-top:0;margin-left:4px;font-size:12px;padding:4px 10px" onclick="cancelReservation(${r.id})">취소</button>` : ''}
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+async function showReservationDetail(id) {
+  const res = await fetch(API + '/reservations/' + id);
+  const data = await res.json();
+  const total = data.order_items?.reduce((s, i) => s + Number(i.subtotal), 0) || 0;
+  document.getElementById('modal-reservation-content').innerHTML = `
+    <h3>예약 #${data.id} 상세</h3>
+    <div class="card-sub">${data.user_name} / ${data.restaurant_name}<br>${new Date(data.reserved_at).toLocaleString('ko-KR')} · ${data.party_size}명</div>
+    <div class="section-label" style="margin-top:16px">주문 항목</div>
+    ${data.order_items?.length ? data.order_items.map(i => `
+      <div class="menu-item" style="cursor:default">
+        <span>${i.menu_name} × ${i.quantity}</span>
+        <span class="badge gold">${Number(i.subtotal).toLocaleString()}원</span>
+      </div>
+    `).join('') : '<div style="color:var(--muted);font-size:13px">주문 없음</div>'}
+    <hr class="divider">
+    <div style="text-align:right;color:var(--accent);font-size:16px;font-weight:700">합계: ${total.toLocaleString()}원</div>
+    <button class="btn" style="width:100%;margin-top:16px" onclick="closeModal()">닫기</button>
+  `;
+  document.getElementById('modal-reservation').classList.add('open');
+}
+
+async function cancelReservation(id) {
+  if (!confirm('예약을 취소하시겠습니까?')) return;
+  const res = await fetch(API + '/reservations/' + id + '/cancel', { method: 'PATCH' });
+  const data = await res.json();
+  if (res.ok) { toast('예약이 취소되었습니다'); loadReservations(); }
+  else toast(data.error, 'error');
+}
+
+async function loadMenuStats() {
+  const res = await fetch(API + '/menus/popular');
+  const data = await res.json();
+  document.getElementById('menus-list').innerHTML = `
+    <table>
+      <thead><tr><th>순위</th><th>메뉴명</th><th>식당</th><th>단가</th><th>총 주문</th><th>총 매출</th></tr></thead>
+      <tbody>
+        ${data.map((m, i) => `<tr>
+          <td style="color:var(--accent);font-weight:700">#${i+1}</td>
+          <td>${m.name}</td>
+          <td style="color:var(--muted)">${m.restaurant_name}</td>
+          <td>${Number(m.price).toLocaleString()}원</td>
+          <td>${m.total_ordered || 0}개</td>
+          <td>${Number(m.total_revenue||0).toLocaleString()}원</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+async function initReservationForm() {
+  const res = await fetch(API + '/restaurants');
+  const data = await res.json();
+  const sel = document.getElementById('f-restaurant');
+  sel.innerHTML = '<option value="">-- 식당 선택 --</option>' +
+    data.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+  const now = new Date(Date.now() + 86400000);
+  document.getElementById('f-datetime').value = now.toISOString().slice(0,16);
+}
+
+async function loadMenusForReservation() {
+  const rid = document.getElementById('f-restaurant').value;
+  if (!rid) return;
+  const res = await fetch(API + '/menus?restaurant_id=' + rid);
+  const menus = await res.json();
+  document.getElementById('menu-select-list').innerHTML = menus.map(m => `
+    <div class="menu-item" id="menu-${m.id}" onclick="toggleMenu(${m.id}, '${m.name}', ${m.price})">
+      <span class="menu-name">${m.name}</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:13px;color:var(--muted)">${m.price.toLocaleString()}원</span>
+        <div class="qty-control" id="qty-${m.id}" style="display:none" onclick="event.stopPropagation()">
+          <button class="qty-btn" onclick="changeQty(${m.id}, -1)">-</button>
+          <span id="qty-val-${m.id}">1</span>
+          <button class="qty-btn" onclick="changeQty(${m.id}, 1)">+</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  Object.keys(selectedMenus).forEach(k => delete selectedMenus[k]);
+}
+
+function toggleMenu(id, name, price) {
+  if (selectedMenus[id]) {
+    delete selectedMenus[id];
+    document.getElementById('menu-' + id).classList.remove('selected');
+    document.getElementById('qty-' + id).style.display = 'none';
+  } else {
+    selectedMenus[id] = { menu_id: id, quantity: 1 };
+    document.getElementById('menu-' + id).classList.add('selected');
+    document.getElementById('qty-' + id).style.display = 'flex';
+  }
+}
+
+function changeQty(id, delta) {
+  if (!selectedMenus[id]) return;
+  selectedMenus[id].quantity = Math.max(1, selectedMenus[id].quantity + delta);
+  document.getElementById('qty-val-' + id).textContent = selectedMenus[id].quantity;
+}
+
+async function createReservation() {
+  const body = {
+    user_id: parseInt(document.getElementById('f-user').value),
+    restaurant_id: parseInt(document.getElementById('f-restaurant').value),
+    reserved_at: document.getElementById('f-datetime').value,
+    party_size: parseInt(document.getElementById('f-party').value),
+    order_items: Object.values(selectedMenus),
+  };
+  if (!body.restaurant_id) return toast('식당을 선택해주세요', 'error');
+  const res = await fetch(API + '/reservations', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (res.ok) {
+    toast(`예약 완료! ID: #${data.reservation_id}`);
+    Object.keys(selectedMenus).forEach(k => delete selectedMenus[k]);
+    document.getElementById('menu-select-list').innerHTML = '';
+    document.getElementById('f-restaurant').value = '';
+  } else {
+    toast(data.error, 'error');
+  }
+}
+
+function closeModal(e) {
+  if (!e || e.target.classList.contains('modal-overlay')) {
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+  }
+}
+
+loadRestaurants();
+</script>
+</body>
+</html>
