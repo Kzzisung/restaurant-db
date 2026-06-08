@@ -64,9 +64,20 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   const client = await req.db.connect();
   try {
-    const { user_id, restaurant_id, reserved_at, party_size, order_items } = req.body;
+    const { user_name, user_email, user_phone, restaurant_id, reserved_at, party_size, order_items } = req.body;
 
     await client.query('BEGIN');
+
+    // 0. 유저 생성 또는 기존 유저 조회
+    const userResult = await client.query(`
+      INSERT INTO users (name, email, phone)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name
+      RETURNING id
+    `, [user_name, user_email, user_phone || null]);
+
+    const user_id = userResult.rows[0].id;
+
 
     // 1. 식당 좌석 정보 잠금 (동시 예약 충돌 방지)
     const restaurantResult = await client.query(

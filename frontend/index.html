@@ -294,15 +294,19 @@
       하나라도 실패 시 전체 ROLLBACK
     </div>
     <div style="max-width:480px">
+      <div class="form-row">
+        <div class="form-group">
+          <label>이름</label>
+          <input type="text" id="f-name" placeholder="홍길동">
+        </div>
+        <div class="form-group">
+          <label>이메일</label>
+          <input type="email" id="f-email" placeholder="hong@example.com">
+        </div>
+      </div>
       <div class="form-group">
-        <label>사용자 ID</label>
-        <select id="f-user">
-          <option value="1">1 - 김민준</option>
-          <option value="2">2 - 이서연</option>
-          <option value="3">3 - 박지호</option>
-          <option value="4">4 - 최유나</option>
-          <option value="5">5 - 정하은</option>
-        </select>
+        <label>전화번호 (선택)</label>
+        <input type="text" id="f-phone" placeholder="010-0000-0000">
       </div>
       <div class="form-group">
         <label>식당 선택</label>
@@ -534,7 +538,10 @@ function changeQty(id, delta) {
 
 async function createReservation() {
   const body = {
-    user_id: parseInt(document.getElementById('f-user').value),
+        // 이렇게
+    user_name: document.getElementById('f-name').value,
+    user_email: document.getElementById('f-email').value,
+    user_phone: document.getElementById('f-phone').value,
     restaurant_id: parseInt(document.getElementById('f-restaurant').value),
     reserved_at: document.getElementById('f-datetime').value,
     party_size: parseInt(document.getElementById('f-party').value),
