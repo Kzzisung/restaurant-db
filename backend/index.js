@@ -14,6 +14,7 @@ app.get('/', (req, res) => {
 // PostgreSQL 연결 풀
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://admin:password123@localhost:5432/restaurant',
+  options: '-c timezone=Asia/Seoul',
 });
 
 // DB 연결 확인 + 스키마 자동 실행
