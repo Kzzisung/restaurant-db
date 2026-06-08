@@ -87,17 +87,16 @@ export function readTest() {
 
 // --- 시나리오 2: 정상 예약 (서로 다른 시간대) ---
 export function normalReservationTest() {
-  const userId = Math.ceil(Math.random() * 5);
   const restaurantId = Math.ceil(Math.random() * 3);
   const menuMap = { 1: [1,2,3], 2: [4,5,6], 3: [7,8,9] };
   const menus = menuMap[restaurantId];
-
-  // VU마다 다른 시간대 예약 → 충돌 거의 없음
   const hour = 11 + (__VU % 10);
   const reservedAt = `2027-03-${String(10 + __VU % 20).padStart(2,'0')}T${String(hour).padStart(2,'0')}:00:00`;
 
   const payload = JSON.stringify({
-    user_id: userId,
+    user_name: `테스트유저${__VU}`,
+    user_email: `testuser${__VU}@benchmark.com`,
+    user_phone: `010-0000-${String(__VU).padStart(4,'0')}`,
     restaurant_id: restaurantId,
     reserved_at: reservedAt,
     party_size: Math.ceil(Math.random() * 3) + 1,
@@ -113,20 +112,17 @@ export function normalReservationTest() {
   const ok = check(res, { '정상 예약 성공 (201)': (r) => r.status === 201 });
   reservationSuccess.add(ok ? 1 : 0);
   reservationFail.add(ok ? 0 : 1);
-
   sleep(0.5);
 }
 
 // --- 시나리오 3: 동시 예약 충돌 (같은 시간대) ---
 export function concurrentReservationTest() {
-  const userId = Math.ceil(Math.random() * 5);
-  const partySize = Math.ceil(Math.random() * 5) + 1;
-
   const payload = JSON.stringify({
-    user_id: userId,
+    user_name: `충돌테스트${__VU}`,
+    user_email: `conflict${__VU}@benchmark.com`,
     restaurant_id: 1,
-    reserved_at: '2027-06-15T19:00:00', // 모두 같은 시간대
-    party_size: partySize,
+    reserved_at: '2027-06-15T19:00:00',
+    party_size: Math.ceil(Math.random() * 5) + 1,
     order_items: [{ menu_id: 1, quantity: 1 }],
   });
 
@@ -140,19 +136,17 @@ export function concurrentReservationTest() {
     '예약 성공 (201)': (r) => r.status === 201,
     '좌석 부족 차단 (400)': (r) => r.status === 400,
   });
-
   sleep(0.1);
 }
 
 // --- 시나리오 4: 취소 + 재예약 동시성 ---
 export function cancelAndRebookTest() {
-  // 먼저 예약 생성
-  const userId = Math.ceil(Math.random() * 5);
   const hour = String(11 + (__VU % 8)).padStart(2, '0');
   const reservedAt = `2027-09-${String(10 + __VU).padStart(2,'0')}T${hour}:00:00`;
 
   const createPayload = JSON.stringify({
-    user_id: userId,
+    user_name: `취소테스트${__VU}`,
+    user_email: `cancel${__VU}@benchmark.com`,
     restaurant_id: 2,
     reserved_at: reservedAt,
     party_size: 2,
@@ -166,10 +160,8 @@ export function cancelAndRebookTest() {
   if (createRes.status === 201) {
     const body = JSON.parse(createRes.body);
     const reservationId = body.reservation_id;
-
     sleep(0.1);
 
-    // 바로 취소 시도
     const start = Date.now();
     const cancelRes = http.patch(`${BASE_URL}/reservations/${reservationId}/cancel`, null, {
       headers: { 'Content-Type': 'application/json' },
@@ -179,7 +171,6 @@ export function cancelAndRebookTest() {
     const ok = check(cancelRes, { '취소 성공 (200)': (r) => r.status === 200 });
     cancelSuccess.add(ok ? 1 : 0);
   }
-
   sleep(0.3);
 }
 
@@ -194,10 +185,10 @@ export function handleSummary(data) {
     '취소 성공률': (data.metrics.cancel_success?.values?.rate * 100)?.toFixed(2) + '%',
   };
 
-  console.log('\n======= 벤치마킹 결과 요약 =======');
+  console.log('\n======= k6 벤치마킹 결과 요약 =======');
   console.log(JSON.stringify(summary, null, 2));
 
   return {
-    'benchmark/result.json': JSON.stringify(data, null, 2),
+    'benchmark/k6_result.json': JSON.stringify(data, null, 2),
   };
 }
