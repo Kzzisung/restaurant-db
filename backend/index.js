@@ -17,6 +17,11 @@ const pool = new Pool({
   options: '-c timezone=Asia/Seoul',
 });
 
+// Pool 연결 시 타임존 설정
+pool.on('connect', (client) => {
+  client.query("SET timezone = 'Asia/Seoul'");
+});
+
 // DB 연결 확인 + 스키마 자동 실행
 const fs = require('fs');
 pool.query('SELECT NOW()')

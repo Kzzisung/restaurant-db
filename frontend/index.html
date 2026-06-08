@@ -537,13 +537,17 @@ function changeQty(id, delta) {
 }
 
 async function createReservation() {
+  const dt = document.getElementById('f-datetime').value;
+  const localDate = new Date(dt);
+  localDate.setHours(localDate.getHours());
+  const reserved_at = localDate.toISOString().slice(0, 16).replace('T', ' ');
+
   const body = {
-        // 이렇게
     user_name: document.getElementById('f-name').value,
     user_email: document.getElementById('f-email').value,
     user_phone: document.getElementById('f-phone').value,
     restaurant_id: parseInt(document.getElementById('f-restaurant').value),
-    reserved_at: document.getElementById('f-datetime').value,
+    reserved_at: reserved_at,
     party_size: parseInt(document.getElementById('f-party').value),
     order_items: Object.values(selectedMenus),
   };
