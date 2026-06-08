@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
       JOIN restaurants r ON res.restaurant_id = r.id
       LEFT JOIN order_items oi ON res.id = oi.reservation_id
       GROUP BY res.id, u.name, u.email, r.name
-      ORDER BY res.created_at DESC
+      ORDER BY res.id ASC
     `);
     res.json(result.rows);
   } catch (err) {
